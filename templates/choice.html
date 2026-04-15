@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}QR Code Type{% endblock %}
+
+{% block body_class %}choice-bg{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Who is this QR Code for?</h1>
+    <a href="{{ url_for('individual_qr') }}" class="button">Individual Attendee</a>
+    <a href="{{ url_for('booked_qr') }}" class="button">Booked Group/Seats</a>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Booking History{% endblock %}
+
+{% block body_class %}history-bg{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Booking History</h1>
+
+    <h2>Individual Attendee Bookings</h2>
+    {% if attendees %}
+    <table class="history-table attendees-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Table</th>
+                <th>Seat</th>
+                <th>Booked At</th>
+                <th>QR</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attendee in attendees %}
+            <tr>
+                <td>{{ attendee.name }}</td>
+                <td>{{ attendee.table_number }}</td>
+                <td>{{ attendee.seat_number }}</td>
+                <td>{{ attendee.booked_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    {% if attendee.qr_code_filename %}
+                        <a href="{{ url_for('static', filename='qrcodes/' + attendee.qr_code_filename) }}" target="_blank">View QR</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No individual attendee bookings found yet.</p>
+    {% endif %}
+
+    <h2 style="margin-top: 40px;">Bulk Bookings</h2>
+    {% if bookings %}
+    <table class="history-table bookings-table">
+        <thead>
+            <tr>
+                <th>Table</th>
+                <th>Seats</th>
+                <th>Booked At</th>
+                <th>ZIP</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.table_number }}</td>
+                <td>{{ booking.starting_seat }} - {{ booking.starting_seat + booking.num_seats - 1 }} ({{ booking.num_seats }} seats)</td>
+                <td>{{ booking.booked_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>
+                {# Note: For security, we don't store zips in static/ for direct access. #}
+                {# A production app would have a route to securely download zips. For now, it's just a record. #}
+                {{ booking.zip_filename }} <br> (Not directly downloadable from history)
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No bulk bookings found yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

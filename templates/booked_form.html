@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Booked Group/Seats QR Details{% endblock %}
+
+{% block body_class %}booked-bg{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Enter Booking Details</h1>
+    <form method="POST">
+        <div class="form-group">
+            <label for="table_number">Table Number:</label>
+            <input type="text" id="table_number" name="table_number" required placeholder="e.g., Table 1" value="{{ request.form.table_number if request.method == 'POST' else '' }}">
+        </div>
+        <div class="form-group">
+            <label for="num_seats">Number of Seats at this Table:</label>
+            <input type="number" id="num_seats" name="num_seats" min="1" value="{{ request.form.num_seats if request.method == 'POST' else 1 }}" required>
+        </div>
+        <div class="form-group">
+            <label for="starting_seat">Starting Seat Number (e.g., if seats are 1-5, enter 1):</label>
+            <input type="number" id="starting_seat" name="starting_seat" min="1" value="{{ request.form.starting_seat if request.method == 'POST' else 1 }}" required>
+        </div>
+        <button type="submit">Generate QR Codes for Booking</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}EventQR Home{% endblock %}
+
+{% block body_class %}index-bg{% endblock %} {# Apply page-specific background #}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome to EventQR!</h1>
+    <p>Your seamless solution for event registration and QR code generation.</p>
+    <a href="{{ url_for('generate_choice') }}" class="button">Start Generating QR Codes</a>
+    <p class="small-text">Learn more about our team and mission.</p>
+</div>
+{% endblock %}
