@@ -1,13 +1,30 @@
-{% extends "base.html" %}
-
-{% block title %}QR Code Type{% endblock %}
-
+{% extends 'base.html' %}
+{% block title %}Bookings - EventQR{% endblock %}
 {% block body_class %}choice-bg{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Who is this QR Code for?</h1>
-    <a href="{{ url_for('individual_qr') }}" class="button">Individual Attendee</a>
-    <a href="{{ url_for('booked_qr') }}" class="button">Booked Group/Seats</a>
+<div class="container" style="text-align: center; max-width: 700px;">
+    <h1 style="margin-bottom: 10px;"><i class="fas fa-ticket-alt"></i> Seat Bookings</h1>
+    <p style="margin-bottom: 40px;">Choose how you want to book seats and generate QR codes.</p>
+    
+    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+        
+        <!-- Single Attendee Card -->
+        <div style="flex: 1; min-width: 250px; padding: 30px; border: 1px solid var(--border-color); border-radius: 10px; background: rgba(0,0,0,0.02); display: flex; flex-direction: column;">
+            <i class="fas fa-user" style="font-size: 3em; color: var(--primary-red); margin-bottom: 15px;"></i>
+            <h3 style="margin: 10px 0;">Single Attendee</h3>
+            <p style="font-size: 0.9em; flex-grow: 1;">Book one specific seat for one person.</p>
+            <a href="{{ url_for('individual_qr') }}" class="button" style="width: 100%; box-sizing: border-box; margin-top: auto;">Select</a>
+        </div>
+        
+        <!-- Bulk Booking Card -->
+        <div style="flex: 1; min-width: 250px; padding: 30px; border: 1px solid var(--border-color); border-radius: 10px; background: rgba(0,0,0,0.02); display: flex; flex-direction: column;">
+            <i class="fas fa-users" style="font-size: 3em; color: var(--secondary-green); margin-bottom: 15px;"></i>
+            <h3 style="margin: 10px 0;">Bulk Booking</h3>
+            <p style="font-size: 0.9em; flex-grow: 1;">Reserve multiple consecutive seats at once.</p>
+            <a href="{{ url_for('booked_qr') }}" class="button btn-green" style="width: 100%; box-sizing: border-box; margin-top: auto;">Select</a>
+        </div>
+
+    </div>
 </div>
 {% endblock %}

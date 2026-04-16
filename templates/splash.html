@@ -9,24 +9,9 @@
 </head>
 <body class="splash-bg">
     <div class="splash-content">
-        <div class="splash-logo">
-            {# Replace with your actual logo image if you have one #}
-            <img src="{{ url_for('static', filename='images/event_logo.png') }}" alt="EventQR Logo">
-            {# Or simply text if you don't have a logo image #}
-            {# EventQR #}
-        </div>
         <h1 class="splash-title">Welcome to EventQR!</h1>
         <p class="splash-subtitle">Your seamless solution for event registration and QR code generation.</p>
         <a href="{{ url_for('index') }}" class="button splash-button">Get Started Now!</a>
     </div>
-
-    <script>
-        // Optional: Auto-redirect after some time if no interaction
-        /*
-        setTimeout(() => {
-            window.location.href = "{{ url_for('index') }}";
-        }, 5000); // Redirect after 5 seconds
-        */
-    </script>
 </body>
 </html>

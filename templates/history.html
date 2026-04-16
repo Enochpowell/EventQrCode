@@ -1,75 +1,99 @@
-{% extends "base.html" %}
-
-{% block title %}Booking History{% endblock %}
-
+{% extends 'base.html' %}
+{% block title %}My History - EventQR{% endblock %}
 {% block body_class %}history-bg{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Booking History</h1>
+<div class="container history-container" style="max-width: 900px;">
+    
+    <!-- Top Header & Clear Button -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <h1 style="margin: 0;"><i class="fas fa-history"></i> My QR History</h1>
+        
+        {% if attendees or bookings %}
+        <form action="{{ url_for('clear_history') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete ALL your history? This will also un-book your seats. This cannot be undone.');">
+            <button type="submit" class="button btn-danger" style="margin: 0;"><i class="fas fa-trash-alt"></i> Clear History</button>
+        </form>
+        {% endif %}
+    </div>
+    
+    <!-- Individual Attendees Section -->
+    <div class="history-section">
+        <h2>Individual Attendees</h2>
+        {% if attendees %}
+            <div class="table-responsive">
+                <table class="history-table attendees-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Table</th>
+                            <th>Seat</th>
+                            <th>Booked Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attendee in attendees %}
+                        <tr>
+                            <td>{{ attendee.name }}</td>
+                            <td><span class="badge badge-table">{{ attendee.table_number }}</span></td>
+                            <td><span class="badge badge-seat">{{ attendee.seat_number }}</span></td>
+                            <td>{{ attendee.booked_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                {% if attendee.qr_code_filename %}
+                                <a href="{{ url_for('static', filename='qrcodes/' + attendee.qr_code_filename) }}" download class="btn-small">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                                {% else %}
+                                <span class="text-muted">Expired</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="no-data-msg"><i class="fas fa-folder-open"></i> You haven't generated any individual QR codes yet.</p>
+        {% endif %}
+    </div>
 
-    <h2>Individual Attendee Bookings</h2>
-    {% if attendees %}
-    <table class="history-table attendees-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Table</th>
-                <th>Seat</th>
-                <th>Booked At</th>
-                <th>QR</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for attendee in attendees %}
-            <tr>
-                <td>{{ attendee.name }}</td>
-                <td>{{ attendee.table_number }}</td>
-                <td>{{ attendee.seat_number }}</td>
-                <td>{{ attendee.booked_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                <td>
-                    {% if attendee.qr_code_filename %}
-                        <a href="{{ url_for('static', filename='qrcodes/' + attendee.qr_code_filename) }}" target="_blank">View QR</a>
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No individual attendee bookings found yet.</p>
-    {% endif %}
+    <hr class="section-divider">
 
-    <h2 style="margin-top: 40px;">Bulk Bookings</h2>
-    {% if bookings %}
-    <table class="history-table bookings-table">
-        <thead>
-            <tr>
-                <th>Table</th>
-                <th>Seats</th>
-                <th>Booked At</th>
-                <th>ZIP</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for booking in bookings %}
-            <tr>
-                <td>{{ booking.table_number }}</td>
-                <td>{{ booking.starting_seat }} - {{ booking.starting_seat + booking.num_seats - 1 }} ({{ booking.num_seats }} seats)</td>
-                <td>{{ booking.booked_at.strftime('%Y-%m-%d %H:%M') }}</td>
-            <td>
-                {# Note: For security, we don't store zips in static/ for direct access. #}
-                {# A production app would have a route to securely download zips. For now, it's just a record. #}
-                {{ booking.zip_filename }} <br> (Not directly downloadable from history)
-            </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No bulk bookings found yet.</p>
-    {% endif %}
+    <!-- Bulk Bookings Section -->
+    <div class="history-section">
+        <h2>Bulk Bookings</h2>
+        {% if bookings %}
+            <div class="table-responsive">
+                <table class="history-table bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Table</th>
+                            <th>Seats Booked</th>
+                            <th>Booked Date</th>
+                            <th>ZIP File</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td><span class="badge badge-table">{{ booking.table_number }}</span></td>
+                            <td>{{ booking.num_seats }} (Starting from {{ booking.starting_seat }})</td>
+                            <td>{{ booking.booked_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                {% if booking.zip_filename %}
+                                <span>{{ booking.zip_filename[:20] }}...</span>
+                                {% else %}
+                                <span class="text-muted">Expired</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="no-data-msg"><i class="fas fa-folder-open"></i> You haven't made any bulk bookings yet.</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

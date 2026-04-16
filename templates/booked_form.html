@@ -1,26 +1,32 @@
-{% extends "base.html" %}
-
-{% block title %}Booked Group/Seats QR Details{% endblock %}
-
+{% extends 'base.html' %}
+{% block title %}Bulk Booking - EventQR{% endblock %}
 {% block body_class %}booked-bg{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Enter Booking Details</h1>
-    <form method="POST">
+<div class="container auth-container">
+    <h1 style="margin-bottom: 5px;"><i class="fas fa-users"></i> Bulk Booking</h1>
+    <p style="margin-bottom: 25px;">Reserve multiple consecutive seats.</p>
+
+    <form method="POST" style="width: 100%;">
         <div class="form-group">
-            <label for="table_number">Table Number:</label>
-            <input type="text" id="table_number" name="table_number" required placeholder="e.g., Table 1" value="{{ request.form.table_number if request.method == 'POST' else '' }}">
+            <label>Table Number</label>
+            <input type="text" name="table_number" required placeholder="e.g. VIP-1" value="{{ table_number|default('') }}">
         </div>
-        <div class="form-group">
-            <label for="num_seats">Number of Seats at this Table:</label>
-            <input type="number" id="num_seats" name="num_seats" min="1" value="{{ request.form.num_seats if request.method == 'POST' else 1 }}" required>
+        
+        <div style="display: flex; gap: 15px;">
+            <div class="form-group" style="flex: 1;">
+                <label>Total Seats Needed</label>
+                <input type="number" name="num_seats" required min="1" placeholder="e.g. 10" value="{{ num_seats|default('') }}">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>Starting Seat #</label>
+                <input type="number" name="starting_seat" required min="1" placeholder="e.g. 1" value="{{ starting_seat|default('') }}">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="starting_seat">Starting Seat Number (e.g., if seats are 1-5, enter 1):</label>
-            <input type="number" id="starting_seat" name="starting_seat" min="1" value="{{ request.form.starting_seat if request.method == 'POST' else 1 }}" required>
-        </div>
-        <button type="submit">Generate QR Codes for Booking</button>
+        
+        <button type="submit" class="button btn-green" style="width: 100%; margin: 20px 0 10px 0;"><i class="fas fa-file-archive"></i> Generate ZIP File</button>
     </form>
+    
+    <a href="{{ url_for('generate_choice') }}" class="small-text auth-link" style="display:block; margin-top: 20px;"><i class="fas fa-arrow-left"></i> Back to Bookings</a>
 </div>
 {% endblock %}

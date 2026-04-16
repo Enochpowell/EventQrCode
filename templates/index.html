@@ -1,14 +1,31 @@
-{% extends "base.html" %}
-
-{% block title %}EventQR Home{% endblock %}
-
-{% block body_class %}index-bg{% endblock %} {# Apply page-specific background #}
+{% extends 'base.html' %}
+{% block title %}Home - EventQR{% endblock %}
+{% block body_class %}index-bg{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Welcome to EventQR!</h1>
-    <p>Your seamless solution for event registration and QR code generation.</p>
-    <a href="{{ url_for('generate_choice') }}" class="button">Start Generating QR Codes</a>
-    <p class="small-text">Learn more about our team and mission.</p>
+<div class="container" style="text-align: center; padding: 50px 30px;">
+    {% if current_user.is_authenticated %}
+        <div class="splash-logo" style="margin: 0 auto 20px auto; width: 80px; height: 80px; font-size: 2.5em; box-shadow: 0 0 15px rgba(255, 65, 54, 0.4);">
+            <i class="fas fa-check-circle" style="color: var(--secondary-green);"></i>
+        </div>
+        <h1 style="font-size: 2.5em; margin-bottom: 10px;">Welcome, {{ current_user.username }}!</h1>
+        <p style="font-size: 1.2em; margin-bottom: 30px;">Your dashboard is ready. What would you like to do today?</p>
+        
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('generate_choice') }}" class="button"><i class="fas fa-ticket-alt"></i> Manage Bookings</a>
+            <a href="{{ url_for('history') }}" class="button btn-green"><i class="fas fa-history"></i> View History</a>
+        </div>
+    {% else %}
+        <div class="splash-logo" style="margin: 0 auto 20px auto; width: 80px; height: 80px; font-size: 2.5em; box-shadow: 0 0 15px rgba(255, 65, 54, 0.4);">
+            <i class="fas fa-qrcode"></i>
+        </div>
+        <h1 style="font-size: 2.5em; margin-bottom: 10px;">Welcome to EventQR</h1>
+        <p style="font-size: 1.2em; margin-bottom: 30px;">The smartest way to generate QR codes and manage event seating.</p>
+        
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('login') }}" class="button"><i class="fas fa-sign-in-alt"></i> Log In</a>
+            <a href="{{ url_for('signup') }}" class="button btn-green"><i class="fas fa-user-plus"></i> Create Account</a>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
