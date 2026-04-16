@@ -16,7 +16,7 @@ from models import db, Attendee, Booking, Seat, User
 
 # --- Flask App Configuration ---
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'a_very_secret_and_long_random_string_you_should_change'
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "fallback-secret-key")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -338,7 +338,6 @@ def history():
     all_bookings = Booking.query.filter_by(user_id=current_user.id).order_by(Booking.booked_at.desc()).all()
     return render_template('history.html', attendees=all_attendees, bookings=all_bookings)
 
-# --- NEW: Clear History Route ---
 @app.route('/clear_history', methods=['POST'])
 @login_required
 def clear_history():
@@ -346,7 +345,6 @@ def clear_history():
     bookings = Booking.query.filter_by(user_id=current_user.id).all()
 
     for attendee in attendees:
-        # Delete physical image file
         if attendee.qr_code_filename:
             file_path = os.path.join(QR_CODE_DIR, attendee.qr_code_filename)
             if os.path.exists(file_path):
@@ -355,7 +353,6 @@ def clear_history():
                 except Exception as e:
                     print(f"Error deleting file {file_path}: {e}")
         
-        # Free up the seat so it can be booked again!
         seat = Seat.query.filter_by(table_number=attendee.table_number, seat_number=attendee.seat_number).first()
         if seat:
             seat.is_booked = False
@@ -380,7 +377,6 @@ def check_seat_availability(table_num, seat_num):
         if attendee:
             booked_by_name = attendee.name
     return jsonify({'table_number': table_num, 'seat_number': seat_num, 'is_booked': is_booked, 'booked_by': booked_by_name})
-
 
 @app.cli.command("init-db")
 def init_db_command():
